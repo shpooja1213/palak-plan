@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weight Loss Guide</title>
+<style>
+  :root{
+    --ink:#3a2a45;
+    --paper:#fbf7fb;
+    --paper-2:#f3e9f5;
+    --plum:#8a4f9e;
+    --plum-dark:#6b3a7d;
+    --rose:#e0729a;
+    --rose-light:#f6d9e4;
+    --lilac:#b48ed1;
+    --line:#ecdcef;
+    --white:#ffffff;
+    --good:#7a9b6f;
+    --warn:#e0729a;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', Consolas, monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:980px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- Top bar ---------- */
+  header.top{
+    background:linear-gradient(135deg, var(--plum) 0%, var(--rose) 100%);
+    padding:36px 0 0;
+  }
+  .brand{
+    font-family:var(--font-display); font-weight:600; font-size:1.6rem;
+    color:#fff; letter-spacing:-0.01em; margin-bottom:6px;
+  }
+  .brand span{opacity:0.85; font-weight:400; font-style:italic;}
+  .brand-sub{color:rgba(255,255,255,0.85); font-size:0.92rem; margin-bottom:28px; max-width:520px;}
+
+  .stat-strip{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    background:rgba(255,255,255,0.14);
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:10px 10px 0 0; overflow:hidden;
+    backdrop-filter:blur(4px);
+  }
+  .stat-cell{padding:18px 16px; border-right:1px solid rgba(255,255,255,0.2);}
+  .stat-cell:last-child{border-right:none;}
+  .stat-num{font-family:var(--font-display); font-size:1.4rem; font-weight:600; color:#fff; line-height:1;}
+  .stat-label{font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.8); margin-top:6px;}
+  @media (max-width:680px){
+    .stat-strip{grid-template-columns:repeat(2,1fr);}
+    .stat-cell{border-bottom:1px solid rgba(255,255,255,0.2);}
+  }
+
+  /* ---------- Tabs ---------- */
+  nav.tabs{
+    display:flex; gap:4px; background:var(--white);
+    border:1px solid var(--line); border-top:none;
+    padding:8px; border-radius:0 0 10px 10px;
+    margin-bottom:36px; flex-wrap:wrap;
+  }
+  .tab-btn{
+    font-family:var(--font-body); font-size:0.88rem; font-weight:600;
+    padding:10px 18px; border:none; background:transparent; color:#8a7a92;
+    border-radius:7px; cursor:pointer; transition:all .15s; flex:1; min-width:110px;
+  }
+  .tab-btn:hover{background:var(--paper-2); color:var(--plum-dark);}
+  .tab-btn.active{background:var(--plum); color:#fff;}
+
+  .tab-panel{display:none; padding-bottom:60px;}
+  .tab-panel.active{display:block; animation:fadeIn .25s ease;}
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- Section headers ---------- */
+  .section-head{display:flex; align-items:baseline; gap:14px; margin-bottom:8px;}
+  h2.section-title{
+    font-family:var(--font-display); font-size:1.7rem; font-weight:600; margin:0;
+    letter-spacing:-0.01em; color:var(--plum-dark);
+  }
+  .section-desc{color:#7a6a82; max-width:620px; margin:0 0 30px; font-size:0.95rem;}
+
+  /* ---------- Cards ---------- */
+  .card{background:var(--white); border:1px solid var(--line); border-radius:10px; padding:24px;}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media (max-width:760px){ .grid-2{grid-template-columns:1fr;} }
+
+  /* ---------- Calorie panel ---------- */
+  .num-row{display:flex; justify-content:space-between; align-items:baseline; padding:11px 0; border-bottom:1px solid var(--line);}
+  .num-row:last-child{border-bottom:none;}
+  .num-row .label{font-size:0.92rem; color:#6b5a73;}
+  .num-row .value{font-family:var(--font-mono); font-weight:600; font-size:1.02rem; color:var(--plum-dark);}
+  .badge-deficit{
+    display:inline-block; background:var(--plum); color:#fff; font-size:0.7rem;
+    padding:2px 9px; border-radius:20px; font-family:var(--font-mono); margin-left:8px;
+  }
+  .macro-bar{display:flex; height:14px; border-radius:7px; overflow:hidden; margin:16px 0 12px; border:1px solid var(--line);}
+  .macro-seg{height:100%;}
+  .macro-legend{display:flex; gap:16px; flex-wrap:wrap; font-size:0.8rem;}
+  .macro-legend span{display:flex; align-items:center; gap:6px;}
+  .dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+
+  /* ---------- Workout checklist ---------- */
+  .week-block{margin-bottom:26px;}
+  .week-label{
+    font-family:var(--font-mono); font-size:0.74rem; text-transform:uppercase; letter-spacing:0.06em;
+    color:var(--plum); margin-bottom:10px; display:flex; align-items:center; gap:10px;
+  }
+  .week-label::after{content:""; flex:1; height:1px; background:var(--line);}
+  .check-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  @media (max-width:760px){ .check-grid{grid-template-columns:repeat(2,1fr);} }
+  .check-card{
+    background:var(--white); border:1px solid var(--line); border-radius:8px;
+    padding:14px; cursor:pointer; transition:all .15s; user-select:none;
+  }
+  .check-card:hover{border-color:var(--lilac);}
+  .check-card.done{background:var(--paper-2); border-color:var(--plum);}
+  .check-day{font-family:var(--font-mono); font-size:0.68rem; text-transform:uppercase; color:#9a8aa2;}
+  .check-focus{font-family:var(--font-display); font-weight:600; font-size:0.95rem; margin:6px 0 10px; color:var(--ink);}
+  .check-box{
+    width:22px; height:22px; border-radius:6px; border:2px solid var(--lilac);
+    display:flex; align-items:center; justify-content:center; font-size:0.85rem; color:#fff;
+    transition:all .15s;
+  }
+  .check-card.done .check-box{background:var(--plum); border-color:var(--plum);}
+
+  .week-progress{font-size:0.82rem; color:#7a6a82; margin-top:8px;}
+
+  /* ---------- Step ramp table ---------- */
+  .ramp-table{width:100%; border-collapse:collapse; font-size:0.9rem;}
+  .ramp-table th, .ramp-table td{padding:10px 12px; text-align:left; border-bottom:1px solid var(--line);}
+  .ramp-table th{font-family:var(--font-mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:#9a8aa2;}
+  .ramp-table td.steps{font-family:var(--font-mono); font-weight:600; color:var(--plum-dark);}
+
+  /* ---------- Tracker tools ---------- */
+  .tool-card{background:var(--white); border:1px solid var(--line); border-radius:10px; padding:26px; margin-bottom:22px;}
+  .tool-title{font-family:var(--font-display); font-size:1.25rem; font-weight:600; color:var(--plum-dark); margin-bottom:4px;}
+  .tool-sub{font-size:0.85rem; color:#8a7a92; margin-bottom:22px;}
+
+  .entry-list{display:flex; flex-direction:column; gap:12px; margin-bottom:22px;}
+  .entry-row{
+    display:grid; grid-template-columns:90px 1fr 90px; align-items:center; gap:14px;
+    background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:12px 16px;
+  }
+  @media (max-width:560px){ .entry-row{grid-template-columns:70px 1fr 70px;} }
+  .entry-week{font-family:var(--font-mono); font-size:0.8rem; color:var(--plum-dark); font-weight:600;}
+  .entry-row input{
+    font-family:var(--font-body); font-size:0.95rem;
+    padding:9px 12px; border:1px solid var(--line); border-radius:6px;
+    background:#fff; width:100%;
+  }
+  .entry-row input:focus{outline:none; border-color:var(--plum);}
+  .entry-diff{font-family:var(--font-mono); font-size:0.78rem; text-align:right;}
+  .diff-down{color:var(--good);}
+  .diff-up{color:var(--warn);}
+  .diff-flat{color:#9a8aa2;}
+
+  .summary-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px;}
+  @media (max-width:600px){ .summary-strip{grid-template-columns:1fr;} }
+  .summary-cell{background:var(--paper-2); border:1px solid var(--line); border-radius:8px; padding:14px 16px; text-align:center;}
+  .summary-num{font-family:var(--font-display); font-size:1.4rem; font-weight:600; color:var(--plum-dark);}
+  .summary-label{font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; color:#9a8aa2; margin-top:4px;}
+
+  canvas{width:100% !important; max-width:100%;}
+
+  /* ---------- Nutrition tips ---------- */
+  .tip-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px;}
+  .tip-list li{display:flex; gap:14px; padding:16px; background:var(--white); border:1px solid var(--line); border-radius:8px;}
+  .tip-num{font-family:var(--font-display); font-weight:600; color:var(--rose); font-size:1.05rem; min-width:24px;}
+  .tip-body b{display:block; margin-bottom:3px; color:var(--ink);}
+  .tip-body{font-size:0.9rem; color:#6b5a73;}
+
+  footer{padding:30px 0 50px; text-align:center; color:#b3a3bb; font-size:0.8rem;}
+  .reset-link{font-family:var(--font-mono); font-size:0.72rem; color:#b3a3bb; text-decoration:underline; cursor:pointer; background:none; border:none;}
+  .save-note{font-size:0.78rem; color:#9a8aa2; text-align:center; margin-top:-6px; margin-bottom:18px;}
+
+  /* ---------- Progress dashboard ---------- */
+  .dashboard{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+    margin:28px 0 30px;
+  }
+  @media (max-width:760px){ .dashboard{grid-template-columns:repeat(2,1fr);} }
+  .dash-card{
+    background:var(--white); border:1px solid var(--line); border-radius:10px;
+    padding:18px 16px; position:relative; overflow:hidden;
+  }
+  .dash-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, var(--plum), var(--rose));
+  }
+  .dash-num{font-family:var(--font-display); font-size:1.6rem; font-weight:600; color:var(--plum-dark); line-height:1;}
+  .dash-label{font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:#9a8aa2; margin-top:8px;}
+  .dash-sub{font-size:0.74rem; color:#b3a3bb; margin-top:3px;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Weight Loss <span>Guide</span></div>
+    <div class="brand-sub">A focused 4-week plan to build momentum — steady training, gradual step increases, and simple daily tracking.</div>
+    <div class="stat-strip">
+      <div class="stat-cell"><div class="stat-num">63 kg</div><div class="stat-label">Starting weight</div></div>
+      <div class="stat-cell"><div class="stat-num">~1,500</div><div class="stat-label">Daily kcal target</div></div>
+      <div class="stat-cell"><div class="stat-num">4 weeks</div><div class="stat-label">Plan length</div></div>
+      <div class="stat-cell"><div class="stat-num">9,000</div><div class="stat-label">Daily step goal</div></div>
+    </div>
+    <div id="syncBar" style="display:flex; gap:10px; justify-content:center; padding:14px 0 22px; flex-wrap:wrap;">
+      <button class="tab-btn" style="flex:none; background:rgba(255,255,255,0.18); color:#fff; border:1px solid rgba(255,255,255,0.4);" onclick="pushToSheet()">⬆ Save to Google Sheet</button>
+      <button class="tab-btn" style="flex:none; background:rgba(255,255,255,0.18); color:#fff; border:1px solid rgba(255,255,255,0.4);" onclick="pullFromSheet()">⬇ Load from Google Sheet</button>
+      <span id="syncStatus" style="align-self:center; font-size:0.78rem; color:rgba(255,255,255,0.85);"></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="dashboard" id="dashboard">
+    <div class="dash-card">
+      <div class="dash-num" id="dashWeightLost">—</div>
+      <div class="dash-label">Weight lost</div>
+      <div class="dash-sub" id="dashWeightSub">no entries yet</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-num" id="dashWorkoutsDone">0 / 16</div>
+      <div class="dash-label">Workouts completed</div>
+      <div class="dash-sub" id="dashWorkoutsSub">across 4 weeks</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-num" id="dashStepAvg">—</div>
+      <div class="dash-label">Avg daily steps</div>
+      <div class="dash-sub" id="dashStepSub">goal: 9,000</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-num" id="dashDaysLeft">28</div>
+      <div class="dash-label">Days remaining</div>
+      <div class="dash-sub" id="dashDaysSub">in this 4-week plan</div>
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="plan">Your Numbers</button>
+    <button class="tab-btn" data-tab="workouts">Workouts</button>
+    <button class="tab-btn" data-tab="steps">Steps</button>
+    <button class="tab-btn" data-tab="nutrition">Nutrition</button>
+    <button class="tab-btn" data-tab="weight">Weight Log</button>
+  </nav>
+
+  <!-- ===================== TAB: PLAN ===================== -->
+  <div class="tab-panel active" id="tab-plan">
+    <div class="section-head"><h2 class="section-title">Your numbers</h2></div>
+    <p class="section-desc">Calculated from your stats: 5'1" (155cm), 34 years old, 63kg, desk job. This is what your body actually needs day to day.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="num-row"><span class="label">Resting metabolic rate (BMR)</span><span class="value">~1,235 kcal</span></div>
+        <div class="num-row"><span class="label">Maintenance (TDEE)</span><span class="value">~1,700 kcal</span></div>
+        <div class="num-row"><span class="label">Daily target<span class="badge-deficit">−200 kcal</span></span><span class="value">~1,500 kcal</span></div>
+        <div class="num-row"><span class="label">Expected pace</span><span class="value">~0.2 kg/wk</span></div>
+      </div>
+      <div class="card">
+        <div style="font-family:var(--font-mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:#9a8aa2; margin-bottom:6px;">Suggested macro split</div>
+        <div class="macro-bar">
+          <div class="macro-seg" style="width:32%; background:var(--plum);"></div>
+          <div class="macro-seg" style="width:38%; background:var(--lilac);"></div>
+          <div class="macro-seg" style="width:30%; background:var(--rose);"></div>
+        </div>
+        <div class="macro-legend">
+          <span><span class="dot" style="background:var(--plum);"></span>Protein — 115g</span>
+          <span><span class="dot" style="background:var(--lilac);"></span>Carbs — 135g</span>
+          <span><span class="dot" style="background:var(--rose);"></span>Fat — 48g</span>
+        </div>
+        <p style="font-size:0.84rem; color:#7a6a82; margin-top:16px; margin-bottom:0;">Protein is set high (~1.8g/kg) to protect muscle while lifting in a deficit.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: WORKOUTS ===================== -->
+  <div class="tab-panel" id="tab-workouts">
+    <div class="section-head"><h2 class="section-title">4-week workout checklist</h2></div>
+    <p class="section-desc">Tick off each session as you complete it during the week — it doesn't matter which day you do them, just that all 4 get done.</p>
+    <div id="workoutWeeks"></div>
+  </div>
+
+  <!-- ===================== TAB: STEPS ===================== -->
+  <div class="tab-panel" id="tab-steps">
+    <div class="section-head"><h2 class="section-title">Daily step goal</h2></div>
+    <p class="section-desc">9,000 steps, every day. Splitting it into 2–3 shorter walks (after meals, on calls, part of your commute) makes it easier to hit than one long walk.</p>
+    <div class="card" style="margin-bottom:30px; text-align:center; padding:32px;">
+      <div style="font-family:var(--font-display); font-size:2.4rem; font-weight:600; color:var(--plum-dark);">9,000 steps</div>
+      <div style="font-size:0.85rem; color:#9a8aa2; margin-top:6px;">your daily target for all 4 weeks</div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-title">Daily step log</div>
+      <div class="tool-sub">Enter today's count any time — your weekly average updates automatically.</div>
+
+      <div class="summary-strip">
+        <div class="summary-cell"><div class="summary-num" id="stepWeekAvg">—</div><div class="summary-label">This week's avg</div></div>
+        <div class="summary-cell"><div class="summary-num" id="stepAllAvg">—</div><div class="summary-label">4-week avg</div></div>
+        <div class="summary-cell"><div class="summary-num" id="stepDaysLogged">—</div><div class="summary-label">Days logged</div></div>
+      </div>
+
+      <div id="stepWeeks"></div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: NUTRITION ===================== -->
+  <div class="tab-panel" id="tab-nutrition">
+    <div class="section-head"><h2 class="section-title">Making the diet stick</h2></div>
+    <p class="section-desc">You don't need perfection for 4 weeks — just consistency. These are the levers that matter most.</p>
+    <ul class="tip-list">
+      <li><div class="tip-num">1</div><div class="tip-body"><b>Protein first, at every meal</b>Aim for 25–30g per meal — the biggest lever for staying full on fewer calories.</div></li>
+      <li><div class="tip-num">2</div><div class="tip-body"><b>Plan one meal you reuse</b>Pick 2–3 meals you like and rotate them. Decision fatigue wrecks most diets, not willpower.</div></li>
+      <li><div class="tip-num">3</div><div class="tip-body"><b>Log loosely, not perfectly</b>A rough daily estimate beats a perfect log for one week then nothing.</div></li>
+      <li><div class="tip-num">4</div><div class="tip-body"><b>Don't fear carbs around training</b>They fuel performance and recovery on lifting days, inside your calorie target.</div></li>
+      <li><div class="tip-num">5</div><div class="tip-body"><b>Think weekly, not daily</b>One higher day doesn't need "fixing" with a crash day after — just return to plan at the next meal.</div></li>
+    </ul>
+  </div>
+
+  <!-- ===================== TAB: WEIGHT LOG ===================== -->
+  <div class="tab-panel" id="tab-weight">
+    <div class="section-head"><h2 class="section-title">Weekly weight log</h2></div>
+    <p class="section-desc">Weigh in once a week, same conditions each time (morning, post-bathroom, pre-food). Trend over weeks matters more than any single number.</p>
+
+    <div class="tool-card">
+      <div class="summary-strip">
+        <div class="summary-cell"><div class="summary-num" id="weightLatest">—</div><div class="summary-label">Latest</div></div>
+        <div class="summary-cell"><div class="summary-num" id="weightChange">—</div><div class="summary-label">Change so far</div></div>
+        <div class="summary-cell"><div class="summary-num" id="weightAvgWeek">—</div><div class="summary-label">Avg weekly change</div></div>
+      </div>
+
+      <canvas id="weightChart" height="100"></canvas>
+      <div class="save-note">Chart includes your starting weight (63kg) as Week 0</div>
+
+      <div class="entry-list" id="weightEntries"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  4-week starter plan · Data is saved in this browser only
+  <div style="margin-top:10px;"><button class="reset-link" onclick="resetAllData()">Clear all logged data</button></div>
+</footer>
+
+<script>
+const START_WEIGHT = 63;
+const SHEET_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwCyFtJWlwiYpqicWyRaoJIzRgrIwWlTOe2MteNsttZhso-YwhLXuN7Eu70kVWx_Y6ZhA/exec';
+
+const WORKOUT_PLAN = [
+  {focus:'Lift — Lower body'},
+  {focus:'Lift — Upper body'},
+  {focus:'Lift — Full body'},
+  {focus:'Cardio session'},
+];
+
+// ---------- Tabs ----------
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- Storage helpers ----------
+function loadData(key, fallback){
+  try{
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  }catch(e){ return fallback; }
+}
+function saveData(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+// ---------- WORKOUT CHECKLIST ----------
+let workoutChecks = loadData('wlg_workouts', {}); // {"1-ex0": true, ...}
+
+function renderWorkouts(){
+  const container = document.getElementById('workoutWeeks');
+  let html = '';
+  for(let w=1; w<=4; w++){
+    let doneCount = 0;
+    let cards = WORKOUT_PLAN.map((d,idx)=>{
+      const key = w + '-ex' + idx;
+      const done = !!workoutChecks[key];
+      if(done) doneCount++;
+      return `
+        <div class="check-card ${done ? 'done':''}" onclick="toggleWorkout('${key}')">
+          <div class="check-focus" style="margin-top:0;">${d.focus}</div>
+          <div class="check-box">${done ? '✓' : ''}</div>
+        </div>`;
+    }).join('');
+    html += `
+      <div class="week-block">
+        <div class="week-label">Week ${w}</div>
+        <div class="check-grid">${cards}</div>
+        <div class="week-progress">${doneCount} of 4 sessions complete</div>
+      </div>`;
+  }
+  container.innerHTML = html;
+}
+
+function toggleWorkout(key){
+  workoutChecks[key] = !workoutChecks[key];
+  saveData('wlg_workouts', workoutChecks);
+  renderWorkouts();
+  updateDashboard();
+}
+
+// ---------- STEP LOG (4 fixed weekly boxes, daily within week shown as 7 inputs) ----------
+// Simplify: one number input per day, organized by week (7 entries x 4 weeks = 28 boxes)
+let stepData = loadData('wlg_steps_fixed', {}); // {"1-1": 4500, "1-2": 5000, ...} week-day
+
+const DAY_LABELS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+function renderSteps(){
+  const container = document.getElementById('stepWeeks');
+  let html = '';
+  for(let w=1; w<=4; w++){
+    let rowInputs = '';
+    for(let d=1; d<=7; d++){
+      const key = w+'-'+d;
+      const val = stepData[key] !== undefined ? stepData[key] : '';
+      rowInputs += `
+        <div style="flex:1; min-width:80px;">
+          <div style="font-family:var(--font-mono); font-size:0.66rem; text-transform:uppercase; color:#9a8aa2; margin-bottom:5px; text-align:center;">${DAY_LABELS[d-1]}</div>
+          <input type="number" min="0" placeholder="0" value="${val}"
+            style="width:100%; text-align:center; padding:8px 4px; border:1px solid var(--line); border-radius:6px; font-family:var(--font-body); font-size:0.85rem;"
+            onchange="setStep(${w},${d},this.value)">
+        </div>`;
+    }
+    html += `
+      <div class="week-block">
+        <div class="week-label">Week ${w}</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">${rowInputs}</div>
+      </div>`;
+  }
+  container.innerHTML = html;
+  updateStepSummary();
+}
+
+function setStep(week, day, value){
+  const key = week+'-'+day;
+  const num = parseInt(value, 10);
+  if(isNaN(num) || value === ''){
+    delete stepData[key];
+  }else{
+    stepData[key] = num;
+  }
+  saveData('wlg_steps_fixed', stepData);
+  updateStepSummary();
+  updateDashboard();
+}
+
+function updateStepSummary(){
+  const entries = Object.entries(stepData);
+  const allVals = entries.map(([k,v])=>v);
+  const avgAll = allVals.length ? Math.round(allVals.reduce((a,b)=>a+b,0)/allVals.length) : null;
+
+  // current week = highest week number that has any entries, else week 1
+  let currentWeek = 1;
+  entries.forEach(([k])=>{
+    const w = parseInt(k.split('-')[0],10);
+    if(w > currentWeek) currentWeek = w;
+  });
+  const weekVals = entries.filter(([k])=> k.startsWith(currentWeek+'-')).map(([k,v])=>v);
+  const avgWeek = weekVals.length ? Math.round(weekVals.reduce((a,b)=>a+b,0)/weekVals.length) : null;
+
+  document.getElementById('stepWeekAvg').textContent = avgWeek !== null ? avgWeek.toLocaleString() : '—';
+  document.getElementById('stepAllAvg').textContent = avgAll !== null ? avgAll.toLocaleString() : '—';
+  document.getElementById('stepDaysLogged').textContent = entries.length + ' / 28';
+}
+
+// ---------- WEIGHT LOG (4 fixed weekly boxes) ----------
+let weightData = loadData('wlg_weight_fixed', {}); // {"1": 62.4, "2": 61.8, ...}
+
+function renderWeightEntries(){
+  const container = document.getElementById('weightEntries');
+  let html = '';
+  let prevVal = START_WEIGHT;
+  for(let w=1; w<=4; w++){
+    const val = weightData[w] !== undefined ? weightData[w] : '';
+    let diffHtml = '<span class="entry-diff diff-flat">—</span>';
+    if(weightData[w] !== undefined){
+      const diff = +(weightData[w] - prevVal).toFixed(1);
+      const cls = diff < 0 ? 'diff-down' : (diff > 0 ? 'diff-up' : 'diff-flat');
+      const sign = diff > 0 ? '+' : '';
+      diffHtml = `<span class="entry-diff ${cls}">${sign}${diff} kg</span>`;
+      prevVal = weightData[w];
+    }
+    html += `
+      <div class="entry-row">
+        <div class="entry-week">Week ${w}</div>
+        <input type="number" step="0.1" min="0" placeholder="Weight in kg" value="${val}"
+          onchange="setWeight(${w}, this.value)">
+        ${diffHtml}
+      </div>`;
+  }
+  container.innerHTML = html;
+  updateWeightSummary();
+}
+
+function setWeight(week, value){
+  const num = parseFloat(value);
+  if(isNaN(num) || value === ''){
+    delete weightData[week];
+  }else{
+    weightData[week] = num;
+  }
+  saveData('wlg_weight_fixed', weightData);
+  renderWeightEntries();
+  drawWeightChart();
+  updateDashboard();
+}
+
+function updateWeightSummary(){
+  const weeks = Object.keys(weightData).map(Number).sort((a,b)=>a-b);
+  if(weeks.length === 0){
+    document.getElementById('weightLatest').textContent = '—';
+    document.getElementById('weightChange').textContent = '—';
+    document.getElementById('weightAvgWeek').textContent = '—';
+    return;
+  }
+  const latestWeek = weeks[weeks.length-1];
+  const latest = weightData[latestWeek];
+  const totalChange = +(latest - START_WEIGHT).toFixed(1);
+  const avgWeekly = +(totalChange / latestWeek).toFixed(2);
+
+  document.getElementById('weightLatest').textContent = latest + ' kg';
+  document.getElementById('weightChange').textContent = (totalChange > 0 ? '+' : '') + totalChange + ' kg';
+  document.getElementById('weightAvgWeek').textContent = (avgWeekly > 0 ? '+' : '') + avgWeekly + ' kg/wk';
+}
+
+// ---------- Weight chart (canvas, no libs) ----------
+function drawWeightChart(){
+  const canvas = document.getElementById('weightChart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const cssWidth = canvas.clientWidth || canvas.parentElement.clientWidth;
+  const cssHeight = 100;
+  canvas.width = cssWidth * dpr;
+  canvas.height = cssHeight * dpr;
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0,0,cssWidth,cssHeight);
+
+  // build series: week 0 = start weight, then weeks 1-4 if present
+  const points = [{w:0, v:START_WEIGHT}];
+  for(let w=1; w<=4; w++){
+    if(weightData[w] !== undefined) points.push({w, v:weightData[w]});
+  }
+
+  const pad = 16;
+  const vals = points.map(p=>p.v);
+  const min = Math.min(...vals);
+  const max = Math.max(...vals);
+  const range = (max - min) || 1;
+  const stepX = points.length > 1 ? (cssWidth - pad*2) / (points.length - 1) : 0;
+
+  function yFor(v){ return cssHeight - pad - ((v - min)/range) * (cssHeight - pad*2); }
+
+  ctx.strokeStyle = '#e0729a';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  points.forEach((p,i)=>{
+    const x = pad + i*stepX;
+    const y = yFor(p.v);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  ctx.fillStyle = '#8a4f9e';
+  points.forEach((p,i)=>{
+    const x = pad + i*stepX;
+    const y = yFor(p.v);
+    ctx.beginPath();
+    ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  // x-axis labels
+  ctx.fillStyle = '#9a8aa2';
+  ctx.font = '11px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  points.forEach((p,i)=>{
+    const x = pad + i*stepX;
+    ctx.fillText(p.w === 0 ? 'Start' : 'Wk '+p.w, x, cssHeight - 2);
+  });
+}
+
+function resetAllData(){
+  if(confirm('This will permanently delete all checked workouts, steps, and weight entries from this browser. Continue?')){
+    localStorage.removeItem('wlg_workouts');
+    localStorage.removeItem('wlg_steps_fixed');
+    localStorage.removeItem('wlg_weight_fixed');
+    localStorage.removeItem('wlg_plan_start');
+    workoutChecks = {};
+    stepData = {};
+    weightData = {};
+    planStart = new Date().toISOString().slice(0,10);
+    localStorage.setItem('wlg_plan_start', planStart);
+    renderWorkouts();
+    renderSteps();
+    renderWeightEntries();
+    drawWeightChart();
+    updateDashboard();
+  }
+}
+
+// ---------- Google Sheets sync ----------
+function setSyncStatus(msg, isError){
+  const el = document.getElementById('syncStatus');
+  el.textContent = msg;
+  el.style.color = isError ? '#ffd6e3' : 'rgba(255,255,255,0.85)';
+}
+
+function pushToSheet(){
+  setSyncStatus('Saving…');
+  const payload = {
+    workouts: workoutChecks,
+    steps: stepData,
+    weight: weightData
+  };
+  const url = SHEET_WEB_APP_URL + '?action=push&data=' + encodeURIComponent(JSON.stringify(payload));
+  fetch(url)
+    .then(r => r.json())
+    .then(res => {
+      if(res.status === 'ok'){
+        setSyncStatus('Saved to Google Sheet ✓');
+      }else{
+        setSyncStatus('Save failed: ' + (res.message || 'unknown error'), true);
+      }
+    })
+    .catch(err => setSyncStatus('Save failed — check the script URL/deployment', true));
+}
+
+function pullFromSheet(){
+  setSyncStatus('Loading…');
+  const url = SHEET_WEB_APP_URL + '?action=pull';
+  fetch(url)
+    .then(r => r.json())
+    .then(res => {
+      if(res.workouts || res.steps || res.weight){
+        workoutChecks = res.workouts || {};
+        stepData = {};
+        Object.keys(res.steps || {}).forEach(k=>{ stepData[k] = Number(res.steps[k]); });
+        weightData = {};
+        Object.keys(res.weight || {}).forEach(k=>{ weightData[k] = Number(res.weight[k]); });
+
+        saveData('wlg_workouts', workoutChecks);
+        saveData('wlg_steps_fixed', stepData);
+        saveData('wlg_weight_fixed', weightData);
+
+        renderWorkouts();
+        renderSteps();
+        renderWeightEntries();
+        drawWeightChart();
+        updateDashboard();
+
+        setSyncStatus('Loaded from Google Sheet ✓');
+      }else{
+        setSyncStatus('No data found in sheet yet', true);
+      }
+    })
+    .catch(err => setSyncStatus('Load failed — check the script URL/deployment', true));
+}
+
+// ---------- Plan start date (for days remaining) ----------
+let planStart = localStorage.getItem('wlg_plan_start');
+if(!planStart){
+  planStart = new Date().toISOString().slice(0,10);
+  localStorage.setItem('wlg_plan_start', planStart);
+}
+
+function updateDashboard(){
+  // Weight lost
+  const weeks = Object.keys(weightData).map(Number).sort((a,b)=>a-b);
+  if(weeks.length === 0){
+    document.getElementById('dashWeightLost').textContent = '—';
+    document.getElementById('dashWeightSub').textContent = 'no entries yet';
+  }else{
+    const latest = weightData[weeks[weeks.length-1]];
+    const lost = +(START_WEIGHT - latest).toFixed(1);
+    document.getElementById('dashWeightLost').textContent = (lost >= 0 ? lost : Math.abs(lost)) + ' kg';
+    document.getElementById('dashWeightSub').textContent = lost >= 0 ? ('since week 0 · ' + START_WEIGHT + ' → ' + latest + ' kg') : ('up ' + Math.abs(lost) + ' kg since week 0');
+  }
+
+  // Workouts completed
+  const totalDone = Object.values(workoutChecks).filter(v => v === true).length;
+  document.getElementById('dashWorkoutsDone').textContent = totalDone + ' / 16';
+  document.getElementById('dashWorkoutsSub').textContent = totalDone === 16 ? 'all sessions complete 🎉' : 'across 4 weeks';
+
+  // Average daily steps
+  const stepVals = Object.values(stepData);
+  if(stepVals.length === 0){
+    document.getElementById('dashStepAvg').textContent = '—';
+    document.getElementById('dashStepSub').textContent = 'goal: 9,000';
+  }else{
+    const avg = Math.round(stepVals.reduce((a,b)=>a+b,0) / stepVals.length);
+    document.getElementById('dashStepAvg').textContent = avg.toLocaleString();
+    document.getElementById('dashStepSub').textContent = (avg >= 9000 ? 'meeting goal ✓' : 'goal: 9,000') + ' · ' + stepVals.length + ' days logged';
+  }
+
+  // Days remaining
+  const start = new Date(planStart + 'T00:00:00');
+  const now = new Date();
+  const elapsedDays = Math.floor((now - start) / (1000*60*60*24));
+  const daysLeft = Math.max(0, 28 - elapsedDays);
+  document.getElementById('dashDaysLeft').textContent = daysLeft;
+  document.getElementById('dashDaysSub').textContent = daysLeft === 0 ? '4-week plan complete' : ('day ' + Math.min(elapsedDays+1, 28) + ' of 28');
+}
+
+window.addEventListener('resize', drawWeightChart);
+
+renderWorkouts();
+renderSteps();
+renderWeightEntries();
+drawWeightChart();
+updateDashboard();
+</script>
+
+</body>
+</html>
